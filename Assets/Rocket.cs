@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
-
+    [SerializeField] float RotationalThrust = 200f;
+    [SerializeField] float MainThrust = 1000f;
     Rigidbody rigidBody;
     AudioSource audioSource;
     
@@ -22,35 +23,58 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ProcessInput();
-        
-            
+        Rotate();
+        Thrust();
+
     }
-
-    private void ProcessInput()
-    {
+    void OnCollisionEnter(Collision collision)
         {
-            if (Input.GetKey(KeyCode.Space))
+            switch (collision.gameObject.tag)
             {
-                rigidBody.AddRelativeForce(Vector3.up);
+                case "friendly":
+                    print("smooth");
+                    //do nothing
+                    break;
+                case "baddy":
+                    print("kaboom!");
+                    break;
 
-                if (!audioSource.isPlaying)
-                {
-                    audioSource.Play();
-                }
+
             }
-            else
-                audioSource.Stop();
                 
         }
+    
+
+    private void Rotate()
+    {
         {
+            
+            float rotationframespeed = Time.deltaTime * RotationalThrust;
+
+            rigidBody.freezeRotation = true;
             if (Input.GetKey(KeyCode.A))
-                transform.Rotate(Vector3.forward);
+                transform.Rotate(Vector3.forward * rotationframespeed);
             else if (Input.GetKey(KeyCode.D))
-                transform.Rotate(-Vector3.forward);
+                transform.Rotate(-Vector3.forward * rotationframespeed);
+            rigidBody.freezeRotation = false;
         }
     }
-       
 
+    private void Thrust()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            float MainThrustframespeed = Time.deltaTime * MainThrust;
+            rigidBody.AddRelativeForce(Vector3.up * MainThrustframespeed);
+
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+        }
+        else
+            audioSource.Stop();
     }
+
+}
 

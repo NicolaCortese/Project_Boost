@@ -65,8 +65,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4208a2d915aa8a349a89cf71d803e8a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationalThrust: 200
-  MainThrust: 1000
+  RotationalThrust: 300
+  MainThrust: 1500
 --- !u!82 &5670888335201416209
 AudioSource:
   m_ObjectHideFlags: 0

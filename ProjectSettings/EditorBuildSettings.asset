@@ -6,9 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Level 1.unity
+    path: Assets/Scenes/Levels/Tutorial.unity
+    guid: aa740c2596372b64a97e1ef3ca928b60
+  - enabled: 1
+    path: Assets/Scenes/Levels/Mars.unity
+    guid: 5502f6170c00edd478137812b8f12323
+  - enabled: 1
+    path: Assets/Scenes/Levels/Mars Monster.unity
+    guid: 94ea06b60a4c3ff4287407bd61abcd5b
+  - enabled: 1
+    path: Assets/Scenes/Levels/Dragon Belly.unity
     guid: 4bc663a815227bd44975282f392769f1
   - enabled: 1
-    path: Assets/Scenes/Level 2.unity
-    guid: aa740c2596372b64a97e1ef3ca928b60
+    path: Assets/Scenes/Levels/Home.unity
+    guid: a0b9478a33877d54f8ee057b5299f90f
   m_configObjects: {}

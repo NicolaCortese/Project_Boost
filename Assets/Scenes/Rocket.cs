@@ -22,8 +22,12 @@ public class Rocket : MonoBehaviour
 
     Rigidbody rigidBody;
     AudioSource audioSource;
-    enum State { Alive, Dying, Transcending };
-    State state = State.Alive;
+    bool Transient = false;
+
+    bool CollisionsEnabler = true;
+
+    
+
 
 
     // Start is called before the first frame update
@@ -36,28 +40,45 @@ public class Rocket : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {// todo remove sound on death
-        if (state == State.Alive) 
+    {
+        if (!Transient) 
         {
             Rotate();
             Thrust();
         }
-
+        if (Debug.isDebugBuild)
+        {
+            Debugkeys();
+        }
     }
+
+    private void Debugkeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadNextScene();
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            CollisionsEnabler = !CollisionsEnabler;
+
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
         {
-        if (state != State.Alive)
+        if (Transient|| !CollisionsEnabler )
         {
-            
             return;
         }
-            switch (collision.gameObject.tag)
+        
+        switch (collision.gameObject.tag)
             {
             case "friendly":
                 //do nada
                 break;
             case "finish":
-                state = State.Transcending;
+                Transient = true;
                 audioSource.Stop();
                 audioSource.PlayOneShot(Winner);
                 WinnerParticle.Play();
@@ -65,11 +86,11 @@ public class Rocket : MonoBehaviour
                 Invoke("LoadNextScene", levelDelay); // change timing
                 break;
             default:
-                state = State.Dying;
+                Transient = true;
                 audioSource.Stop();
                 audioSource.PlayOneShot(Kaboom);
                 KaboomParticle.Play();
-                Invoke("LoadFirstScene", levelDelay);
+                Invoke("Respawn", levelDelay);
 
                 break;
 
@@ -79,33 +100,49 @@ public class Rocket : MonoBehaviour
         }
     private void LoadNextScene()
     {
-        
-        
-        
-        SceneManager.LoadScene(1);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+        int finalScene = SceneManager.sceneCountInBuildSettings-1;
+        print(finalScene);
+        if (currentSceneIndex == finalScene)
+        {
+            SceneManager.LoadScene(0);
+
+        }
+        else
+            SceneManager.LoadScene(nextSceneIndex);
 
     }
 
-    private void LoadFirstScene()
+    private void Respawn()
     {
-        
-        SceneManager.LoadScene(0);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+        int finalScene = SceneManager.sceneCountInBuildSettings;
+
+        if (currentSceneIndex == finalScene)
+        {
+            SceneManager.LoadScene(0);
+
+        }
+        else
+        SceneManager.LoadScene(currentSceneIndex);
 
     }
 
     private void Rotate()
     {
-        {
-            
-            float rotationframespeed = Time.deltaTime * RotationalThrust;
+        rigidBody.angularVelocity = Vector3.zero; // remove rotation due to physics
 
-            rigidBody.freezeRotation = true;
+        float rotationframespeed = Time.deltaTime * RotationalThrust;
+            
             if (Input.GetKey(KeyCode.A))
                 transform.Rotate(Vector3.forward * rotationframespeed);
             else if (Input.GetKey(KeyCode.D))
                 transform.Rotate(-Vector3.forward * rotationframespeed);
-            rigidBody.freezeRotation = false;
-        }
+                    
     }
 
     private void Thrust()
